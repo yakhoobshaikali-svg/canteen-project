@@ -86,24 +86,20 @@ def login():
         email = request.form["email"]
         password = request.form["password"]
 
-        conn = sqlite3.connect("database.db")
-        c = conn.cursor()
-        c.execute("SELECT * FROM users WHERE email=? AND password=?",
-                  (email,password))
-        user = c.fetchone()
-        conn.close()
+        # Simple fixed login
+        if email == "admin@gmail.com" and password == "1234":
+            session["role"] = "admin"
+            return redirect("/admin")
 
-        if user:
-            session["user_id"] = user[0]
-            session["role"] = user[4]
+        elif email == "user@gmail.com" and password == "1234":
+            session["user_id"] = 1
+            session["role"] = "customer"
+            return redirect("/menu")
 
-            if user[4] == "admin":
-                return redirect("/admin")
-            else:
-                return redirect("/menu")
+        else:
+            return "Invalid Login"
 
     return render_template("login.html")
-
 # -------- MENU --------
 @app.route("/menu")
 def menu():
