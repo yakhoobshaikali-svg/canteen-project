@@ -34,6 +34,28 @@ def init_db():
 
 init_db()
 
+# -------- ADD DEFAULT ITEMS --------
+def add_items():
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
+
+    c.execute("SELECT COUNT(*) FROM items")
+    count = c.fetchone()[0]
+
+    if count == 0:
+        items = [
+            ("Dosa", 40, "https://source.unsplash.com/400x300/?dosa"),
+            ("Idli", 30, "https://source.unsplash.com/400x300/?idli"),
+            ("Samosa", 20, "https://source.unsplash.com/400x300/?samosa")
+        ]
+
+        c.executemany("INSERT INTO items (name,price,image) VALUES (?,?,?)", items)
+
+    conn.commit()
+    conn.close()
+
+add_items()
+
 # -------- HOME --------
 @app.route("/")
 def home():
